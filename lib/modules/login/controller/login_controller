@@ -1,0 +1,18 @@
+
+import 'package:get/get.dart';
+
+class LoginController extends GetxController {
+  // Declare any variables or methods needed for login logic
+  var isLoading = false.obs;
+
+  void login(String username, String password) {
+    isLoading.value = true;
+    
+    // Add login logic here, like an API call
+    // Example: After login, update the loading state
+    Future.delayed(Duration(seconds: 2), () {
+      isLoading.value = false;
+      // Handle login success or failure here
+    });
+  }
+}
