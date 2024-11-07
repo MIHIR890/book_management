@@ -1,3 +1,4 @@
+import 'package:book_management/modules/dashboard/view/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -18,21 +19,19 @@ class LoginViewState extends State<LoginView> {
     return Scaffold(
       appBar: AppBar(title: const Text("Sign In")),
       body: SingleChildScrollView(
-        child:
-          Column(
+        child: Column(
           children: [
-
             Container(
-              height: MediaQuery.of(context).size.height*0.3,
-              child: Align (
+              height: MediaQuery.of(context).size.height * 0.3,
+              child: Align(
                 alignment: Alignment.bottomCenter,
-                child: Lottie.asset(
-                    'assets/lottie/app_start.json',
-                    width: MediaQuery.of(context).size.width*0.8
-                ),
+                child: Lottie.asset('assets/lottie/app_start.json',
+                    width: MediaQuery.of(context).size.width * 0.8),
               ),
             ),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Card(
@@ -94,6 +93,10 @@ class LoginViewState extends State<LoginView> {
                           child: ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState?.validate() ?? false) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Dashboard()));
                                 // Handle sign in logic
                               }
                             },
@@ -102,7 +105,8 @@ class LoginViewState extends State<LoginView> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12.0),
                               ),
-                              padding: const EdgeInsets.symmetric(vertical: 14.0),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 14.0),
                               shadowColor: Colors.black.withOpacity(0.3),
                               elevation: 8,
                             ),
@@ -153,7 +157,8 @@ class CustomTextField extends StatelessWidget {
       obscureText: obscureText,
       validator: validator,
       decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
         hintText: hintText,
         hintStyle: TextStyle(color: Colors.black.withOpacity(.8)),
         focusedBorder: OutlineInputBorder(
@@ -174,5 +179,3 @@ class CustomTextField extends StatelessWidget {
     );
   }
 }
-
-                 
