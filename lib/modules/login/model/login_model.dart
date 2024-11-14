@@ -1,17 +1,18 @@
 // user_model.dart
-class UserModel {
+
+class LoginModel {
   final String fullName;
   final String email;
   final String mobileNumber;
 
-  UserModel({
+  LoginModel({
     required this.fullName,
     required this.email,
     required this.mobileNumber,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
+  factory LoginModel.fromJson(Map<String, dynamic> json) {
+    return LoginModel(
       fullName: json['fullName'],
       email: json['email'],
       mobileNumber: json['mobileNumber'].toString(),

@@ -1,5 +1,8 @@
 import 'package:book_management/modules/dashboard/view/dashboard.dart';
+import 'package:book_management/modules/login/controller/login_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:lottie/lottie.dart';
 
 class LoginView extends StatefulWidget {
@@ -10,6 +13,8 @@ class LoginView extends StatefulWidget {
 }
 
 class LoginViewState extends State<LoginView> {
+  final LoginController loginController = Get.put(LoginController());
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -43,9 +48,13 @@ class LoginViewState extends State<LoginView> {
                     child: Column(
                       children: [
                         const SizedBox(height: 10),
-                        CustomTextField(
-                          controller: _emailController,
-                          hintText: 'Email',
+                        TextFormField(
+                          controller: loginController.emailController,
+                          onChanged: (value) =>
+                              loginController.emailController.text = value,
+                          decoration: InputDecoration(
+                            hintText: 'Email',
+                          ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your email';
@@ -58,9 +67,13 @@ class LoginViewState extends State<LoginView> {
                           },
                         ),
                         const SizedBox(height: 16.0),
-                        CustomTextField(
-                          controller: _passwordController,
-                          hintText: 'Password',
+                        TextFormField(
+                          controller: loginController.passwordController,
+                          onChanged: (value) =>
+                              loginController.passwordController.text = value,
+                          decoration: InputDecoration(
+                            hintText: 'Password',
+                          ),
                           obscureText: true,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -93,10 +106,8 @@ class LoginViewState extends State<LoginView> {
                           child: ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState?.validate() ?? false) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Dashboard()));
+                                loginController.login(context);
+
                                 // Handle sign in logic
                               }
                             },

@@ -1,4 +1,4 @@
-import 'package:book_management/modules/login/controller/login_controller';
+import 'package:book_management/modules/login/controller/login_controller.dart';
 import 'package:get/get.dart';
 
 class LoginBinding extends Bindings {
