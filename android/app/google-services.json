@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "57663797348",
+    "project_id": "bukmanagement-99905",
+    "storage_bucket": "bukmanagement-99905.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:57663797348:android:c08b3951df158743ad0771",
+        "android_client_info": {
+          "package_name": "com.example.book_management"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "57663797348-qqf3g5gqec950nkv7bhu297d2e6h8ijg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.book_management",
+            "certificate_hash": "f5a3a7ae5147c1b643f70003b2e3f8df70899b2c"
+          }
+        },
+        {
+          "client_id": "57663797348-1g1eturb8enf7m2gai1f1ks59h6pggja.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBp4BHhYe764JLbHipTXjC2GP2S6f-YU7M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "57663797348-1g1eturb8enf7m2gai1f1ks59h6pggja.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
