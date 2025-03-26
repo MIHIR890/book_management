@@ -256,13 +256,13 @@ class _DashboardState extends State<Dashboard>
               case 1:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Collection()),
+                  MaterialPageRoute(builder: (context) => const Collection()),
                 );
                 break;
               case 3:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ProfileScreen()),
+                  MaterialPageRoute(builder: (context) => const ProfileScreen()),
                 );
                 break;
             }

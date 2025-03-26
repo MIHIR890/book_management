@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:lottie/lottie.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -138,6 +139,30 @@ class LoginViewState extends State<LoginView> {
                 ),
               ),
             ),
+      ElevatedButton(
+        onPressed: () async {
+          final result = await loginController.signInWithGoogle();
+
+          if (result['success']) {
+            // Navigator.pushReplacement(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) => HomeScreen(
+            //       userData: result['data']['user'], // Pass user data
+            //     ),
+            //   ),
+            // );
+          } else {
+            print("${result['message']}");
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(result['message'])),
+            );
+          }
+        },
+        child: Text('Sign in with Google'),
+      ),
+            ElevatedButton(onPressed: loginController.signOut, child: Text("SignOut"))
+
           ],
         ),
       ),

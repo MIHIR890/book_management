@@ -145,7 +145,7 @@ class _CollectionState extends State<Collection> {
               case 1:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Collection()),
+                  MaterialPageRoute(builder: (context) => const Collection()),
                 );
                 break;
               case 3:

@@ -20,12 +20,12 @@ class AppPages {
     // ),
     GetPage(
       name: _Paths.LOGIN,
-      page: () => LoginView(),
+      page: () => const LoginView(),
       binding: LoginBinding(),
     ),
     GetPage(
       name: _Paths.MPIN,
-      page: () => MpinView(),
+      page: () => const MpinView(),
       binding: MpinBinding(),
     ),
    

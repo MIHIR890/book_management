@@ -6,7 +6,7 @@ abstract class Routes {
   static const HOME = _Paths.HOME;
   static const LOGIN = _Paths.LOGIN;
   static const MPIN = _Paths.MPIN;
-
+  
 }
 
 abstract class _Paths {
