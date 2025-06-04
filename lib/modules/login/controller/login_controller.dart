@@ -1,41 +1,78 @@
 // login_controller.dart
 
 import 'dart:convert';
+import 'package:book_management/modules/login/model/user_model.dart';
+import 'package:book_management/modules/mpin/view/mpin_view.dart';
 import 'package:book_management/repository/api_client.dart';
 import 'package:book_management/repository/api_endpoints.dart';
+import 'package:book_management/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:book_management/modules/dashboard/view/dashboard.dart';
 import 'package:book_management/modules/login/model/login_model.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController extends GetxController {
   TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-  final String _backendUrl = 'http://192.168.217.11 :3000';  // Replace with your server URL
+  LoginModel? loginModel;
+  UserModel? userModel;
+  RxBool isDataStored = false.obs;
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    getDataFromPreference();
+    super.onInit();
+  }
+  Future <void> getDataFromPreference() async{
+    final prefs = await SharedPreferences.getInstance();
+    String? userData = prefs.getString('userData');
+    print(userData);
+    if(userData != null){
+      isDataStored.value = true;
+     userModel =UserModel.fromJson( json.decode(userData!));
+     print(userModel?.fullName);
+     }
+    else{
+      isDataStored.value = false;
+      print("No data Stored");
 
+    }
+
+
+
+
+
+  }  Future <void> saveDataTOPreference(UserModel? userData) async{
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userData', json.encode(userData?.toJson()));
+    print('Saved Successfully');
+    getDataFromPreference();
+    isDataStored.value = true;
+
+
+
+
+  }
   // Sign In with Google and Firebase
   Future<Map<String, dynamic>> signInWithGoogle() async {
-
     try {
-
-
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       print(googleUser);
-
 
       if (googleUser == null) {
         return {'success': false, 'message': 'Google Sign-In canceled'};
       }
 
       final GoogleSignInAuthentication googleAuth =
-      await googleUser.authentication;
+          await googleUser.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
@@ -43,7 +80,7 @@ class LoginController extends GetxController {
       );
       print("Access Token :${googleAuth.accessToken}");
       final UserCredential userCredential =
-      await _auth.signInWithCredential(credential);
+          await _auth.signInWithCredential(credential);
 
       final user = userCredential.user;
       if (user == null) {
@@ -67,19 +104,20 @@ class LoginController extends GetxController {
           'user': userData,
         },
       };
-
     } catch (e) {
-      print('Error during Google sign-in: $e');  // Additional logging for errors
+      print('Error during Google sign-in: $e'); // Additional logging for errors
 
       return {'success': false, 'message': e.toString()};
     }
   }
 
   // Send user data to backend
-  Future<Map<String, dynamic>> _sendUserDataToBackend(Map<String, dynamic> userData) async {
+  Future<Map<String, dynamic>> _sendUserDataToBackend(
+      Map<String, dynamic> userData) async {
     try {
       final response = await http.post(
-        Uri.parse('$_backendUrl/api/auth/signup'), // Your Express endpoint
+        Uri.parse(
+            '${ApiEndpoints.baseUrl}/api/auth/signup'), // Your Express endpoint
         headers: {'Content-Type': 'application/json'},
         body: json.encode(userData),
       );
@@ -87,7 +125,8 @@ class LoginController extends GetxController {
       if (response.statusCode == 200) {
         return {'success': true};
       } else {
-        print("Error in saving data. Status Code: ${response.statusCode}, Response Body: ${response.body}");
+        print(
+            "Error in saving data. Status Code: ${response.statusCode}, Response Body: ${response.body}");
         return {'success': false, 'message': 'Error saving user data'};
       }
     } catch (e) {
@@ -99,42 +138,50 @@ class LoginController extends GetxController {
 
   // Sign out from both Firebase and Google
   Future<void> signOut() async {
-    await _auth.signOut();  // Sign out from Firebase
-    await _googleSignIn.signOut();  // Sign out from Google
+    await _auth.signOut(); // Sign out from Firebase
+    await _googleSignIn.signOut(); // Sign out from Google
   }
 
+  Future<void> login(BuildContext context) async {
+    Widgets.showLoader("Loading");
+    try {
+      const String endPoint = ApiEndpoints.loginApi;
+      final body = {
+        'email': emailController.text,
+        'password': passwordController.text,
+      };
+      print(body);
 
+      final result = await ApiHelper.post(endPoint, body);
 
-Future<void> login(BuildContext context) async {
-  print("login");
+      if (result['success']) {
+        Widgets.hideLoader();
 
-  const String endPoint = ApiEndpoints.loginApi;
-  final body = {
-    'email': emailController.text,
-    'password': passwordController.text,
-  };
-
-  final result = await ApiHelper.post(endPoint, body);
-
-  if (result['success']) {
-    final data = result['data'];
-    if (data['message'] == 'Login successful') {
-      final token = data['token'];
-      final userDetails = LoginModel.fromJson(data['userDetails']);
-      print('Response: ${data}');
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Dashboard(),
-        ),
-      );
-    } else {
-      _showErrorDialog(context, data['message']);
+        final data = result['data'];
+        if (data['message'] == 'Login successful') {
+          final token = data['token'];
+          userModel = UserModel.fromJson(data['userDetails']);
+          print('Response: ${data}');
+          saveDataTOPreference(userModel);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MpinView(),
+            ),
+          );
+        } else {
+          _showErrorDialog(context, data['message']);
+          Widgets.hideLoader();
+        }
+      } else {
+        _showErrorDialog(context, result['message']);
+        Widgets.hideLoader();
+      }
+    } catch (e) {
+      Widgets.hideLoader();
     }
-  } else {
-    _showErrorDialog(context, result['message']);
   }
-}
+
   void _showErrorDialog(BuildContext context, String message) {
     showDialog(
       context: context,

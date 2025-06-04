@@ -12,15 +12,18 @@ class ApiHelper {
   }) async {
     String url = ApiEndpoints.baseUrl + endPoint;
     final uri = Uri.parse(url);
+    print(url);
+    print(body);
 
     try {
       final response = await http
           .post(
             uri,
-            headers: headers ?? {'Content-Type': 'application/json'},
-            body: jsonEncode(body),
+            // headers: headers ?? {'Content-Type': 'application/json'},
+            body: body,
           )
           .timeout(const Duration(seconds: 30));
+      print(response);
 
       if (response.statusCode == 200) {
         return {
@@ -35,6 +38,7 @@ class ApiHelper {
       }
     } on TimeoutException catch (_) {
       // Handle timeout
+
       return {
         'success': false,
         'message': 'Request timed out. Please try again later.',

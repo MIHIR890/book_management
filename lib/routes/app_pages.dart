@@ -1,7 +1,9 @@
+import 'package:book_management/modules/dashboard/view/dashboard.dart';
 import 'package:book_management/modules/login/binding/login_binding.dart';
 import 'package:book_management/modules/login/view/login_view.dart';
 import 'package:book_management/modules/mpin/binding/mpin_binding.dart';
 import 'package:book_management/modules/mpin/view/mpin_view.dart';
+import 'package:book_management/modules/splashScreen/views/splash_view.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
 part 'app_routes.dart';
@@ -27,6 +29,14 @@ class AppPages {
       name: _Paths.MPIN,
       page: () => const MpinView(),
       binding: MpinBinding(),
+    ),
+    GetPage(
+      name: _Paths.SPLASH,
+      page: () =>  SplashScreen(),
+    ),
+    GetPage(
+      name: _Paths.DASHBOARD,
+      page: () =>  Dashboard(),
     ),
    
   ];
