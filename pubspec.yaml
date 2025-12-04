@@ -44,12 +44,34 @@ dependencies:
   google_sign_in: ^6.2.2
   firebase_core: ^3.8.0
   http: ^1.2.2
-  shared_preferences: ^2.3.3
   flutter_animate: ^4.5.2
+  animated_notch_bottom_bar: ^1.0.3
+  shared_preferences: ^2.3.3
+  flutter_staggered_grid_view: ^0.7.0
+  line_awesome_flutter: ^3.0.1
+  lite_rolling_switch: ^1.0.1
+  anim_search_bar: ^2.0.3
+  image_picker: ^1.1.2
+  audioplayers: ^6.1.0
+  like_button: ^2.0.5
+  audio_service: ^0.18.16
+  just_audio: ^0.9.42
+  flutter_local_notifications: ^18.0.1
+  awesome_notifications: ^0.8.2
+  assets_audio_player: ^3.1.1
+  google_fonts: ^6.2.1
+  pie_chart: ^5.4.0
+  expandable_text: ^2.3.0
+  easy_date_timeline: ^1.0.3
+  intl: ^0.18.1
+  fl_chart: ^0.69.2
+
 
 
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.14.4
+
   flutter_test:
     sdk: flutter
 
@@ -62,6 +84,13 @@ dev_dependencies:
   animated_notch_bottom_bar: ^1.0.3
   flutter_staggered_grid_view: ^0.7.0
 
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/book_logo.png"
+  adaptive_icon_background: "#2196F3"
+  adaptive_icon_foreground: "assets/icons/book_logo.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -69,10 +98,11 @@ dev_dependencies:
 flutter:
   assets:
     - assets/lottie/
+    - assets/icons/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
-  # the material Icons class.
+  # the material Icons class.ar
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:

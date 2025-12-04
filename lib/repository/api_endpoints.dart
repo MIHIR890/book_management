@@ -1,4 +1,9 @@
 class ApiEndpoints {
-  static const baseUrl = "http://192.168.55.5:3000/api/auth/";
+  static const baseUrl = "https://bookmanagement-ri63.onrender.com/api/auth/";
+  static const baseUrl2 = "https://bookmanagement-ri63.onrender.com/api/";
   static const loginApi = 'login';
+  static const  getCategoryList = 'getcategoryList';
+  static const  getBookList= 'getBookList';
+  static const  audioBook= 'audioBook';
+
 }

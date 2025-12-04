@@ -8,6 +8,7 @@ abstract class Routes {
   static const MPIN = _Paths.MPIN;
   static const SPLASH = _Paths.SPLASH;
   static const DASHBOARD = _Paths.DASHBOARD;
+  static const AUDIOBOOK = _Paths.AUDIOBOOK;
 
 }
 
@@ -18,5 +19,6 @@ abstract class _Paths {
   static const MPIN = '/mpin';
   static const SPLASH = '/splash';
   static const DASHBOARD = '/home';
+  static const AUDIOBOOK = '/audio-book';
 
 }

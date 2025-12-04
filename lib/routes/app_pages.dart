@@ -1,3 +1,6 @@
+import 'package:book_management/modules/audioBook/binding/audio_binding.dart';
+import 'package:book_management/modules/audioBook/view/audioBook_view.dart';
+import 'package:book_management/modules/dashboard/binding/dashboard_binding.dart';
 import 'package:book_management/modules/dashboard/view/dashboard.dart';
 import 'package:book_management/modules/login/binding/login_binding.dart';
 import 'package:book_management/modules/login/view/login_view.dart';
@@ -37,6 +40,12 @@ class AppPages {
     GetPage(
       name: _Paths.DASHBOARD,
       page: () =>  Dashboard(),
+      binding: DashboardBinding()
+    ),
+    GetPage(
+      name: _Paths.AUDIOBOOK,
+      page: () =>  AudiobookView(),
+      binding: AudioBinding()
     ),
    
   ];

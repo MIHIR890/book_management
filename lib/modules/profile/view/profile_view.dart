@@ -1,4 +1,7 @@
+import 'package:book_management/modules/login/controller/login_controller.dart';
+import 'package:book_management/modules/login/model/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -10,6 +13,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   bool isTapped = false;
   double _animatedWidth = 0;
+  LoginController loginController = Get.find<LoginController>();
 
   void _onTap() {
     setState(() {
@@ -23,6 +27,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
+        actions: [
+          GestureDetector(
+            onTap: (){
+              loginController.logOut(context);
+            },
+              child: Icon(Icons.logout))],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,7 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.black)),
                           prefixIcon: Icon(Icons.abc),
-                          label: Text("Mihir Pandit")),
+                          label: Text(loginController.userModel?.email ?? "")),
                     ),
                   ],
                 ),
@@ -103,7 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.black)),
                           prefixIcon: Icon(Icons.email),
-                          label: Text("test@gmail.com")),
+                          label: Text(loginController.userModel?.fullName ?? "")),
                     ),
                   ],
                 ),
@@ -122,7 +132,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.black)),
                           prefixIcon: Icon(Icons.phone),
-                          label: Text("+91223373838")),
+                          label: Text(loginController.userModel?.mobileNumber ?? "")),
                     ),
                   ],
                 ),

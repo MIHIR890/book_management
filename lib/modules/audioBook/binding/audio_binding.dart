@@ -1,0 +1,11 @@
+import 'package:book_management/modules/audioBook/controller/audioBook_controller.dart';
+import 'package:book_management/modules/login/controller/login_controller.dart';
+import 'package:get/get.dart';
+
+class AudioBinding extends Bindings {
+  @override
+  void dependencies() {
+    // Lazy put the LoginController so it is initialized when needed
+    Get.lazyPut<AudioController>(() => AudioController());
+  }
+}

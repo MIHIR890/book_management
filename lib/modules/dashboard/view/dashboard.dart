@@ -1,8 +1,12 @@
+import 'package:book_management/modules/audioBook/controller/audioBook_controller.dart';
+import 'package:book_management/modules/audioBook/view/audioBook_view.dart';
 import 'package:book_management/modules/collection/view/collection.dart';
+import 'package:book_management/modules/dashboard/controller/category_controller.dart';
 import 'package:book_management/modules/profile/view/profile_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
+import 'package:get/get.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -11,7 +15,9 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard>
     with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+  TabController? _tabController;
+  late AudioController audioController;
+  CategoryController categoryController = Get.find<CategoryController>();
   final NotchBottomBarController _controller =
       NotchBottomBarController(index: 0);
   bool isSearching = false; // Add this to your StatefulWidget
@@ -19,17 +25,35 @@ class _DashboardState extends State<Dashboard>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this); // 5 tabs
+    categoryController.fetchCategories().then((_) {
+      if (categoryController.categories.isNotEmpty) {
+        _tabController = TabController(
+          length: categoryController.categories.length,
+          vsync: this,
+        );
+        setState(() {});
+      }
+    });
+    audioController = Get.put(AudioController());
+    audioController.fetchAudios();
+
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _tabController?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    return Obx(() {
+      // waiting for API
+      if (categoryController.isLoading.value || _tabController == null) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+
     return Scaffold(
         body: CustomScrollView(
           slivers: [
@@ -130,27 +154,15 @@ class _DashboardState extends State<Dashboard>
                     children: [
                       TabBar(
                         controller: _tabController,
-                        tabs: List.generate(5, (index) {
+                        isScrollable: true, // IMPORTANT if categories are more than 3
+                        tabs: categoryController.categories.map((cat) {
                           return Tab(
-                            text: 'Tab ${index + 1}', // Tab text for each tab
+                            text: cat.name, // Show category name
                           );
-                        }),
-                        indicatorColor:
-                            Colors.blue, // Color of the active tab indicator
+                        }).toList(),
+                        indicatorColor: Colors.blue,
                       ),
-                      Expanded(
-                        child: TabBarView(
-                          controller: _tabController,
-                          children: List.generate(5, (index) {
-                            return Center(
-                              child: Text(
-                                'Content for Tab ${index + 1}',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            );
-                          }),
-                        ),
-                      ),
+
                     ],
                   ),
                 ),
@@ -216,23 +228,23 @@ class _DashboardState extends State<Dashboard>
               itemLabel: 'Home',
             ),
             BottomBarItem(
-              inActiveItem: Icon(Icons.star, color: Colors.blueGrey),
+              inActiveItem: Icon(Icons.category, color: Colors.blueGrey),
               activeItem: Icon(
-                Icons.star,
+                Icons.category,
                 color: Colors.blueAccent,
               ),
               itemLabel: 'Collection',
             ),
             BottomBarItem(
               inActiveItem: Icon(
-                Icons.settings,
+                Icons.book_online,
                 color: Colors.blueGrey,
               ),
               activeItem: Icon(
-                Icons.settings,
+                Icons.book_online,
                 color: Colors.pink,
               ),
-              itemLabel: 'Page 3',
+              itemLabel: 'Audio Book',
             ),
             BottomBarItem(
               inActiveItem: Icon(
@@ -259,6 +271,13 @@ class _DashboardState extends State<Dashboard>
                   MaterialPageRoute(builder: (context) => const Collection()),
                 );
                 break;
+                case 2:
+                  // Get.toNamed('/audio-book');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AudiobookView()),
+                  );
+                break;
               case 3:
                 Navigator.push(
                   context,
@@ -268,6 +287,6 @@ class _DashboardState extends State<Dashboard>
             }
           },
           kIconSize: 24.0,
-        ));
+        ));});
   }
 }

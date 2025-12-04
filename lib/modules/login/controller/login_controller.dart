@@ -7,6 +7,7 @@ import 'package:book_management/repository/api_client.dart';
 import 'package:book_management/repository/api_endpoints.dart';
 import 'package:book_management/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -30,12 +31,34 @@ class LoginController extends GetxController {
     getDataFromPreference();
     super.onInit();
   }
+  Future<void> saveIsDataStored(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDataStored', value);
+  }
+
+  ///remove
+  Future<void> clearDataStored() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('isDataStored');
+    isDataStored.value = false;
+  }
+
+  Future<void> loadIsDataStored() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool value = prefs.getBool('isDataStored') ?? false;
+    isDataStored.value = value;
+  }
+
+
+
+
   Future <void> getDataFromPreference() async{
     final prefs = await SharedPreferences.getInstance();
     String? userData = prefs.getString('userData');
     print(userData);
     if(userData != null){
       isDataStored.value = true;
+      saveIsDataStored(true);
      userModel =UserModel.fromJson( json.decode(userData!));
      print(userModel?.fullName);
      }
@@ -48,10 +71,20 @@ class LoginController extends GetxController {
 
 
 
+  }
+  ///remove local storage
 
-  }  Future <void> saveDataTOPreference(UserModel? userData) async{
+
+  Future<void> clearPreference() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('userData');
+    isDataStored.value = false;
+  }
+
+  Future <void> saveDataTOPreference(UserModel? userData) async{
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('userData', json.encode(userData?.toJson()));
+
     print('Saved Successfully');
     getDataFromPreference();
     isDataStored.value = true;
@@ -65,7 +98,7 @@ class LoginController extends GetxController {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
-      print(googleUser);
+      debugPrint(googleUser.toString());
 
       if (googleUser == null) {
         return {'success': false, 'message': 'Google Sign-In canceled'};
@@ -78,7 +111,7 @@ class LoginController extends GetxController {
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      print("Access Token :${googleAuth.accessToken}");
+      debugPrint("Access Token :${googleAuth.accessToken}");
       final UserCredential userCredential =
           await _auth.signInWithCredential(credential);
 
@@ -98,14 +131,16 @@ class LoginController extends GetxController {
       // Send the user data to the backend
       await _sendUserDataToBackend(userData);
 
+
       return {
         'success': true,
         'data': {
           'user': userData,
         },
       };
-    } catch (e) {
-      print('Error during Google sign-in: $e'); // Additional logging for errors
+    }
+    catch (e) {
+      debugPrint('Error during Google sign-in: $e'); // Additional logging for errors
 
       return {'success': false, 'message': e.toString()};
     }
@@ -117,12 +152,17 @@ class LoginController extends GetxController {
     try {
       final response = await http.post(
         Uri.parse(
-            '${ApiEndpoints.baseUrl}/api/auth/signup'), // Your Express endpoint
+            '${ApiEndpoints.baseUrl}signup'), // Your Express endpoint
         headers: {'Content-Type': 'application/json'},
         body: json.encode(userData),
       );
 
       if (response.statusCode == 200) {
+        isDataStored.value = true;
+        saveIsDataStored(true);
+
+        debugPrint("USer Data:$userData");
+
         return {'success': true};
       } else {
         print(
@@ -152,7 +192,8 @@ class LoginController extends GetxController {
       };
       print(body);
 
-      final result = await ApiHelper.post(endPoint, body);
+      final result = await ApiHelper.post(endPoint,  headers: {'Content-Type': 'application/json'},
+          body);
 
       if (result['success']) {
         Widgets.hideLoader();
@@ -163,25 +204,33 @@ class LoginController extends GetxController {
           userModel = UserModel.fromJson(data['userDetails']);
           print('Response: ${data}');
           saveDataTOPreference(userModel);
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MpinView(),
-            ),
-          );
+          Get.offNamed('/home');
         } else {
           _showErrorDialog(context, data['message']);
+          print('Message: ${ data['message']}');
+
           Widgets.hideLoader();
         }
       } else {
         _showErrorDialog(context, result['message']);
+        print('Error: ${ result['message']}');
+
         Widgets.hideLoader();
       }
     } catch (e) {
       Widgets.hideLoader();
+      print('Catch: ${e}');
+
     }
   }
 
+
+  Future<void> logOut(BuildContext context) async{
+    var message = "You want to Logout ?";
+    _showLogOutDialog(context,message);
+
+
+  }
   void _showErrorDialog(BuildContext context, String message) {
     showDialog(
       context: context,
@@ -197,4 +246,33 @@ class LoginController extends GetxController {
       ),
     );
   }
+  void _showLogOutDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Logout?'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              // 1️⃣ Logout from Google/Firebase if logged in
+              await signOut();
+
+              // 2️⃣ Clear stored flags and data
+              await clearDataStored();
+              await clearPreference();
+
+              // 3️⃣ Navigate to login screen
+
+
+              Get.offAllNamed('/login');
+
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
 }

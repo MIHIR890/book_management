@@ -27,144 +27,174 @@ class LoginViewState extends State<LoginView> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              height: MediaQuery.of(context).size.height * 0.3,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Lottie.asset('assets/lottie/app_start.json',
-                    width: MediaQuery.of(context).size.width * 0.8),
+            // TOP ANIMATION
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.30,
+              child: Center(
+                child: Lottie.asset(
+                  'assets/lottie/app_start.json',
+                  width: MediaQuery.of(context).size.width * 0.75,
+                ),
               ),
             ),
-            SizedBox(
-              height: 20,
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Card(
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 10),
-                        TextFormField(
-                          controller: loginController.emailController,
-                          onChanged: (value) =>
-                              loginController.emailController.text = value,
-                          decoration: InputDecoration(
-                            hintText: 'Email',
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your email';
-                            }
-                            final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
-                            if (!emailRegex.hasMatch(value)) {
-                              return 'Please enter a valid email';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 16.0),
-                        TextFormField(
-                          controller: loginController.passwordController,
-                          onChanged: (value) =>
-                              loginController.passwordController.text = value,
-                          decoration: InputDecoration(
-                            hintText: 'Password',
-                          ),
-                          obscureText: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your password';
-                            }
-                            return null;
-                          },
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton(
-                              onPressed: () {
-                                // Handle forgot password logic
-                              },
-                              child: const Text(
-                                'Forgot Password?',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 50,
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState?.validate() ?? false) {
-                                loginController.login(context);
 
-                                // Handle sign in logic
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.amber,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 14.0),
-                              shadowColor: Colors.black.withOpacity(0.3),
-                              elevation: 8,
-                            ),
-                            child: const Text(
-                              'Sign In',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
+            const SizedBox(height: 20),
+
+            // LOGIN FORM CARD
+            Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              elevation: 6,
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 10),
+
+                      // EMAIL FIELD
+                      TextFormField(
+                        controller: loginController.emailController,
+                        decoration: const InputDecoration(
+                          labelText: "Email",
+                          prefixIcon: Icon(Icons.email_outlined),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+                          if (!emailRegex.hasMatch(value)) {
+                            return 'Please enter a valid email';
+                          }
+                          return null;
+                        },
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // PASSWORD FIELD
+                      TextFormField(
+                        controller: loginController.passwordController,
+                        decoration: const InputDecoration(
+                          labelText: "Password",
+                          prefixIcon: Icon(Icons.lock_outline),
+                        ),
+                        obscureText: true,
+                        validator: (value) =>
+                        value == null || value.isEmpty ? "Enter password" : null,
+                      ),
+
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            "Forgot Password?",
+                            style: TextStyle(
+                              color: Colors.blueGrey,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 10),
-                      ],
-                    ),
+                      ),
+
+                      // SIGN IN BUTTON
+                      SizedBox(
+                        height: 50,
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              loginController.login(context);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.amber,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: const Text(
+                            "Sign In",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+                    ],
                   ),
                 ),
               ),
             ),
-      ElevatedButton(
-        onPressed: () async {
-          final result = await loginController.signInWithGoogle();
 
-          if (result['success']) {
-            // Navigator.pushReplacement(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => HomeScreen(
-            //       userData: result['data']['user'], // Pass user data
-            //     ),
-            //   ),
-            // );
-          } else {
-            print("${result['message']}");
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(result['message'])),
-            );
-          }
-        },
-        child: Text('Sign in with Google'),
-      ),
-            ElevatedButton(onPressed: loginController.signOut, child: Text("SignOut"))
+            const SizedBox(height: 20),
 
+            // DIVIDER WITH TEXT
+            Row(
+              children: const [
+                Expanded(child: Divider(thickness: 1)),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    "OR",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+                Expanded(child: Divider(thickness: 1)),
+              ],
+            ),
+
+            const SizedBox(height: 20),
+
+            // GOOGLE SIGN IN BUTTON
+            SizedBox(
+              height: 50,
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () async {
+                  final result = await loginController.signInWithGoogle();
+                  if (result['success']) {
+                    Get.offNamed('/home');
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(result['message'])),
+                    );
+                  }
+                },
+                icon: Image.asset(
+                  'assets/icons/google_icon.png',
+                  height: 24,
+                ),
+                label: const Text(
+                  "Sign In with Google",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
           ],
-        ),
+        )
+
       ),
     );
   }

@@ -5,6 +5,8 @@ import 'package:book_management/repository/api_endpoints.dart';
 import 'package:http/http.dart' as http;
 
 class ApiHelper {
+
+
   static Future<Map<String, dynamic>> post(
     String endPoint,
     Map<String, dynamic> body, {
@@ -16,12 +18,11 @@ class ApiHelper {
     print(body);
 
     try {
-      final response = await http
-          .post(
-            uri,
-            // headers: headers ?? {'Content-Type': 'application/json'},
-            body: body,
-          )
+      final response = await http.post(
+        uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
+      )
           .timeout(const Duration(seconds: 30));
       print(response);
 
@@ -50,4 +51,28 @@ class ApiHelper {
       };
     }
   }
+
+  static Future<dynamic> get(String endpoint) async {
+    var baseUrl = ApiEndpoints.baseUrl2;
+    final url = Uri.parse(baseUrl + endpoint);
+    ("GET: $url");
+
+    try {
+      final response = await http.get(url);
+
+      print("STATUS: ${response.statusCode}");
+      print("BODY: ${response.body}");
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception("GET request failed: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("ERROR: $e");
+      rethrow;
+    }
+  }
+
+
 }

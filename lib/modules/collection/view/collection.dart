@@ -1,9 +1,13 @@
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
+import 'package:book_management/modules/dashboard/controller/category_controller.dart';
+import 'package:book_management/modules/dashboard/view/dashboard.dart';
+import 'package:book_management/modules/profile/view/profile_view.dart';
 // import 'package:dashboard/main.dart';
 // import 'package:dashboard/profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:get/get.dart';
 
 class Collection extends StatefulWidget {
   const Collection({super.key});
@@ -16,18 +20,8 @@ class _CollectionState extends State<Collection> {
   final NotchBottomBarController _controller =
       NotchBottomBarController(index: 1);
   // Sample list of collections with names and IDs
-  final List<Map<String, String>> collections = [
-    {'id': '1', 'name': 'Collection 1'},
-    {'id': '2', 'name': 'Collection 2'},
-    {'id': '3', 'name': 'Collection 3'},
-    {'id': '4', 'name': 'Collection 4'},
-    {'id': '5', 'name': 'Collection 5'},
-    {'id': '6', 'name': 'Collection 6'},
-    {'id': '7', 'name': 'Collection 7'},
-    {'id': '8', 'name': 'Collection 8'},
-    {'id': '9', 'name': 'Collection 9'},
-    {'id': '10', 'name': 'Collection 10'},
-  ];
+  CategoryController categoryController = Get.find<CategoryController>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -52,14 +46,14 @@ class _CollectionState extends State<Collection> {
           ),
           childrenDelegate: SliverChildBuilderDelegate(
             (context, index) {
-              final collection = collections[index];
+              final collection = categoryController.categories[index];
               return Tile(
-                id: collection['id']!,
-                name: collection['name']!,
+                id: collection.categoryId.toString(),
+                name: collection.name,
                 color: colors[index % colors.length],
               );
             },
-            childCount: collections.length,
+            childCount: categoryController.categories.length,
           ),
         ),
         bottomNavigationBar: AnimatedNotchBottomBar(
@@ -102,20 +96,20 @@ class _CollectionState extends State<Collection> {
               itemLabel: 'Home',
             ),
             BottomBarItem(
-              inActiveItem: Icon(Icons.star, color: Colors.blueGrey),
+              inActiveItem: Icon(Icons.category, color: Colors.blueGrey),
               activeItem: Icon(
-                Icons.star,
+                Icons.category,
                 color: Colors.blueAccent,
               ),
               itemLabel: 'Collection',
             ),
             BottomBarItem(
               inActiveItem: Icon(
-                Icons.settings,
+                Icons.book_online,
                 color: Colors.blueGrey,
               ),
               activeItem: Icon(
-                Icons.settings,
+                Icons.book_online,
                 color: Colors.pink,
               ),
               itemLabel: 'Page 3',
@@ -129,7 +123,7 @@ class _CollectionState extends State<Collection> {
                 Icons.person,
                 color: Colors.yellow,
               ),
-              itemLabel: 'Page 4',
+              itemLabel: 'Profile',
             ),
           ],
           onTap: (index) {
@@ -137,10 +131,10 @@ class _CollectionState extends State<Collection> {
             // _pageController.jumpToPage(index);
             switch (index) {
               case 0:
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => Dashboard()),
-                // );
+
+                Navigator.pop(
+                  context,)
+               ;
                 break;
               case 1:
                 Navigator.push(
@@ -149,10 +143,10 @@ class _CollectionState extends State<Collection> {
                 );
                 break;
               case 3:
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => ProfileScreen()),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                );
                 break;
             }
           },

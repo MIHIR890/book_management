@@ -14,6 +14,8 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    loginController.loadIsDataStored();
+
     Future.delayed(Duration(seconds: 2), () {
       if (loginController.isDataStored.value) {
         Get.offNamed('/home'); // or '/mpin' if that’s your logic
