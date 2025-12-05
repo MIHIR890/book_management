@@ -1,8 +1,10 @@
 import 'package:book_management/modules/audioBook/controller/audioBook_controller.dart';
 import 'package:book_management/modules/audioBook/view/audioBook_view.dart';
+import 'package:book_management/modules/bookData/view/book_data.dart';
 import 'package:book_management/modules/collection/view/collection.dart';
 import 'package:book_management/modules/dashboard/controller/category_controller.dart';
 import 'package:book_management/modules/profile/view/profile_view.dart';
+import 'package:book_management/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
@@ -31,11 +33,14 @@ class _DashboardState extends State<Dashboard>
           length: categoryController.categories.length,
           vsync: this,
         );
-        setState(() {});
+        categoryController.fetchBooks(
+            categoryController.categories.first.categoryId);
       }
     });
     audioController = Get.put(AudioController());
     audioController.fetchAudios();
+
+
 
   }
 
@@ -153,6 +158,13 @@ class _DashboardState extends State<Dashboard>
                   child: Column(
                     children: [
                       TabBar(
+                        onTap: (index) {
+                          final selectedCategory =
+                          categoryController.categories[index];
+                          print(selectedCategory.name);
+                          categoryController.fetchBooks(
+                              selectedCategory.categoryId);
+                        },
                         controller: _tabController,
                         isScrollable: true, // IMPORTANT if categories are more than 3
                         tabs: categoryController.categories.map((cat) {
@@ -162,6 +174,94 @@ class _DashboardState extends State<Dashboard>
                         }).toList(),
                         indicatorColor: Colors.blue,
                       ),
+                      Container(
+                        child: Obx(() {
+                          if (categoryController.bookList.isNull) {
+                            Center(
+                              child: Text("No books available"),
+                            );
+                          }
+
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: categoryController.bookList.length,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+
+                              itemBuilder: (context, itemIndex) {
+                                final book =
+                                categoryController.bookList[itemIndex];
+
+                                return Dismissible(
+                                  key: ValueKey<String>(book.bookId.toString()),
+                                  onDismissed: (direction) {
+                                    categoryController.bookList
+                                        .removeAt(itemIndex);
+                                  },
+                                  confirmDismiss:
+                                      (DismissDirection direction) async {
+                                    if (direction ==
+                                        DismissDirection.startToEnd) {
+                                      return await Widgets.showRejectionDialog(context);
+                                    } else {
+                                      return await Widgets.showConfirmationDialog(
+                                          context);
+                                    }
+                                  },
+                                  background: Container(
+                                    height: 50,
+                                    color: Colors.red,
+                                    margin: const EdgeInsets.only(top: 10),
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'Delete',
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+                                  ),
+                                  secondaryBackground: Container(
+                                    height: 50,
+                                    color: Colors.blue,
+                                    margin: const EdgeInsets.only(top: 10),
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'Save',
+                                        textAlign: TextAlign.right,
+                                      ),
+                                    ),
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: (){
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>BookData()));
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+
+                                        border: Border.all(color: Colors.black),
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: Colors.white,
+                                      ),
+                                      margin: const EdgeInsets.only(top: 10),
+                                      height: 50,
+                                      child: Center(
+                                        child: Text(
+                                          book.bookName,
+                                          style:
+                                          const TextStyle(color: Colors.black),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        }),
+                      ),
+
 
                     ],
                   ),

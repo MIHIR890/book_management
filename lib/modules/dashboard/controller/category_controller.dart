@@ -29,7 +29,6 @@ class CategoryController extends GetxController {
     try {
       final response = await ApiHelper.get(ApiEndpoints.getCategoryList);
 
-      debugPrint(response.toString()); // <-- FIXED (response is a Map)
       if(response['status'] == 'S'){
 
       final List<dynamic> data = response['data']; // <-- FIXED
@@ -47,5 +46,37 @@ class CategoryController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  Future<void> fetchBooks(int? categoryId)async{
+     Widgets.showLoader('Fetching');
+     try{
+       var request = {
+         "categoryId" :categoryId
+       };
+       final response = await ApiHelper.post2(ApiEndpoints.getBookLit, request);
+       debugPrint('Response Data: ${response}');
+      if(response['data ']['status'] == 'S') {
+        Widgets.hideLoader();
+
+        final List<
+            dynamic> responseData = response['data']['data']; // <-- No json.decode
+
+        bookList.value = responseData
+            .map((item) => BookModel.fromJson(item))
+            .toList();
+      }
+      Widgets.hideLoader();
+      debugPrint("Error in Data");
+
+     } catch (error) {
+       Widgets.hideLoader();
+
+       print('Error: $error'); // Log error for debugging
+       Get.snackbar('Error', error.toString());
+     } finally {
+       isLoading.value = false;
+     }
+  }
+
 
 }

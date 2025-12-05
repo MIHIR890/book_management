@@ -5,5 +5,5 @@ class ApiEndpoints {
   static const  getCategoryList = 'getcategoryList';
   static const  getBookList= 'getBookList';
   static const  audioBook= 'audioBook';
-
+  static const getBookLit = 'getBookList';
 }
